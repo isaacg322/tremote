@@ -1,3 +1,4 @@
+
 import pandas as pd
 import numpy as np
 import sys
@@ -5,6 +6,8 @@ import sys
 # This script is made to be a test version on the 532 individuals from the
 # 1000 Genomes Project.
 # Running this test for bigger datasets is not recomended.
+
+
 
 chr3st_vcf = pd.read_table('~/Escritorio/interest_snps_chr3st.recode.vcf',
 sep='\t')
@@ -103,6 +106,7 @@ def dict_generator(vcf_dataframe,max_snps,**options):
 
     keys = range(0,max_snps)
     dictionary = dict(zip(keys,values))
+    dictionary['-'] = 'N'
     return(dictionary)
 
 # Nucleotide based dictionary generation for all VCF's
@@ -130,6 +134,8 @@ def index_annot(chr_haplotype,max_ind,chr_dictionary):
                 # the count when it finds a 1.
     # Above iteration returns a list of lists with indexes were a match was
     # found
+            elif i == 0:
+                temporal_indexes[dlist_index].append('-')
 
     translated_indexes = [[]for x in xrange(0,max_ind)]
 
@@ -146,6 +152,21 @@ def index_annot(chr_haplotype,max_ind,chr_dictionary):
     # Above iteration returns rsID/nucleotide translated version of the list of
     # lists generated in the
     # previous iteration.
+
+# Made to manage the presence of '-' in dictionaries
+# Returns a tuple containing np.arrays with unique string haplotype
+# configurations and counts for its ocurrences
+def almost_haplotypes(haplotype,max_ind,dictionary):
+    annotate = index_annot(haplotype,max_ind,dictionary)
+
+    temp_list = [[] for x in xrange(0,max_ind)]
+
+    for num_list,ind_list in enumerate(annotate, start = 0):
+        temp_list[num_list].append(''.join(ind_list))
+
+    temp_list2 = np.unique(np.array(temp_list), return_counts = True)
+
+    return(temp_list2)
 
 # Final report at the stdout for partial haplotypes
 def partial_haplotypes():
@@ -229,12 +250,11 @@ def partial_haplotypes():
 # Final report at the stdout for full haplotypes
 def full_haplotypes():
     # For haplotype 1
-    trans_full = np.unique((np.array(index_annot(haplotype_1,503,full_dict))),
-    return_counts = True)
+    trans_full = almost_haplotypes(haplotype_1,503,full_dict)
 
     # For haplotype 2
-    strans_full = np.unique((np.array(index_annot(haplotype_2,503,full_dict))),
-    return_counts = True) 
+    strans_full = almost_haplotypes(haplotype_2,503,full_dict)
+
 
     print """*This is the first haplotype string incluiding all the interest regions
     in all the case individuals*"""
