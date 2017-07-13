@@ -134,7 +134,7 @@ def haplotype4_full_vcf():
     haplotype_2 = haploseparator(all_cases,len(all_cases),haplotype = 'h2')
     dicts4_full_vcf()
 
-def all_chromosomes_dis(max_individuals_hrc_cases):
+def all_chromosomes_dis():
     #FULL VCF FOR ALL REGIONS IN CASES
     all_cases = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_diseased_w_o_header.vcf', sep='\t')
     haplotype_1 = haploseparator(all_cases,len(all_cases),haplotype = 'h1')
@@ -145,14 +145,24 @@ def all_chromosomes_dis(max_individuals_hrc_cases):
     trans_full = almost_haplotypes(haplotype_1,
     max_individuals_hrc_cases,full_dict)
 
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+""", trans_full
+
     #For haplotype 2
     strans_full = almost_haplotypes(haplotype_2,
     max_individuals_hrc_cases,full_dict)
 
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+""", strans_full
+
 def helper():
     partialvsfull = raw_input('''
 Show full haplotype report or partial haplotype report?(f/p): ''' )
-    if partialvsfull == 'f' && which_vcfs == 'k'
+    if partialvsfull == 'f':
         all_chromosomes_dis()
     if partialvsfull == 'p':
         each_chromosome()
