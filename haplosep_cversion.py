@@ -13,6 +13,7 @@ import sys
 global max_individuals_1k, max_individuals_hrc_cases
 max_individuals_1k = 503
 max_individuals_hrc_cases = 4328
+max_individuals_hrc_controls = 7046
 
 def haploseparator(vcf_dataframe,number_of_snps,**options):
 
@@ -128,17 +129,17 @@ def almost_haplotypes(haplotype,max_ind,dictionary):
 
     return(common_haplotypes)
 
-def haplotype4_full_vcf():
-    global haplotype_1,haplotype_2
-    haplotype_1 = haploseparator(all_cases,len(all_cases),haplotype = 'h1')
-    haplotype_2 = haploseparator(all_cases,len(all_cases),haplotype = 'h2')
-    dicts4_full_vcf()
-
-def all_chromosomes_dis():
+def each_chromosome():
     #FULL VCF FOR ALL REGIONS IN CASES
-    all_cases = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_diseased_w_o_header.vcf', sep='\t')
-    haplotype_1 = haploseparator(all_cases,len(all_cases),haplotype = 'h1')
-    haplotype_2 = haploseparator(all_cases,len(all_cases),haplotype = 'h2')
+    chr3st_vcf = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_diseased_w_o_header.vcf', sep='\t')
+    chr3nd_vcf = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_controls_w_o_header.vcf', sep='\t')
+    chr5_vcf =
+    chr7_vcf =
+    chr20_vcf =
+    chr3st_h1 = haploseparator(all_cases,len(all_cases),haplotype = 'h1')
+    chr3st_h1 = haploseparator(all_cases,len(all_cases),haplotype = 'h2')
+    haplotype_1c = haploseparator(all_controls,len(all_controls),haplotype = 'h1')
+    haplotype_2c = haploseparator(all_controls,len(all_controls),haplotype = 'h2')
     full_dict = dict_generator(all_cases,len(all_cases),value = 'nucleotide')
 
     #For haplotype 1
@@ -148,6 +149,7 @@ def all_chromosomes_dis():
     print """
 *These are the most common haplotype configurations in the
 first string of haplotype for all the interest regions*
+>>>CASE INDIVIDUALS<<<
 """, trans_full
 
     #For haplotype 2
@@ -157,7 +159,83 @@ first string of haplotype for all the interest regions*
     print """
 *These are the most common haplotype configurations in the
 first string of haplotype for all the interest regions*
+>>>CASE INDIVIDUALS<<<
 """, strans_full
+
+# The same just for controls
+
+    #For haplotype 1 (controls)
+    trans_fullc = almost_haplotypes(haplotype_1c,
+    max_individuals_hrc_controls,full_dict)
+
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+>>>CONTROL INDIVIDUALS<<<
+""", trans_fullc
+
+    #For haplotype 2 (controls)
+    strans_fullc = almost_haplotypes(haplotype_2c,
+    max_individuals_hrc_controls,full_dict)
+
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+>>>CONTROL INDIVIDUALS<<<
+""", strans_fullc
+
+
+def all_chromosomes_dis():
+    #FULL VCF FOR ALL REGIONS IN CASES
+    all_cases = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_diseased_w_o_header.vcf', sep='\t')
+    all_controls = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_controls_w_o_header.vcf', sep='\t')
+    haplotype_1 = haploseparator(all_cases,len(all_cases),haplotype = 'h1')
+    haplotype_2 = haploseparator(all_cases,len(all_cases),haplotype = 'h2')
+    haplotype_1c = haploseparator(all_controls,len(all_controls),haplotype = 'h1')
+    haplotype_2c = haploseparator(all_controls,len(all_controls),haplotype = 'h2')
+    full_dict = dict_generator(all_cases,len(all_cases),value = 'nucleotide')
+
+    #For haplotype 1
+    trans_full = almost_haplotypes(haplotype_1,
+    max_individuals_hrc_cases,full_dict)
+
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+>>>CASE INDIVIDUALS<<<
+""", trans_full
+
+    #For haplotype 2
+    strans_full = almost_haplotypes(haplotype_2,
+    max_individuals_hrc_cases,full_dict)
+
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+>>>CASE INDIVIDUALS<<<
+""", strans_full
+
+# The same just for controls
+
+    #For haplotype 1 (controls)
+    trans_fullc = almost_haplotypes(haplotype_1c,
+    max_individuals_hrc_controls,full_dict)
+
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+>>>CONTROL INDIVIDUALS<<<
+""", trans_fullc
+
+    #For haplotype 2 (controls)
+    strans_fullc = almost_haplotypes(haplotype_2c,
+    max_individuals_hrc_controls,full_dict)
+
+    print """
+*These are the most common haplotype configurations in the
+first string of haplotype for all the interest regions*
+>>>CONTROL INDIVIDUALS<<<
+""", strans_fullc
 
 def helper():
     partialvsfull = raw_input('''
