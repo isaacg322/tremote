@@ -6,7 +6,6 @@ import sys
 # This is a final version of the haploseparator, made to run in cluster
 # managing ~4000 individuals VCF file.
 
-# NO PARTIAL REPORT FOR THIS VERSION
 # NO 1K GENOMES REPORT FOR THIS VERSION
 
 # GENERAL FUCNTIONS COLLECTION
@@ -135,10 +134,10 @@ def almost_haplotypes(haplotype,max_ind,dictionary):
 def each_chromosome():
     hrc_vcfs_list_ca = []
     hrc_vcfs_list_co = []
-    regions = ['TERC','SENP7','TERT','GPR37/POT1','RTEL1']
+    regions = ['RTEL1','SENP7','TERC','TERT','GPR37/POT1']
     for hrc_vcfs_ca in os.listdir(directory1):
         if hrc_vcfs_ca[-3:] == 'vcf' and hrc_vcfs_ca[:6] == 'hrc_ca':
-            hrc_vcfs_list_ca.append(hrc_vcfs)
+            hrc_vcfs_list_ca.append(hrc_vcfs_ca)
     for hrc_vcfs_co in os.listdir(directory1):
         if hrc_vcfs_co[-3:] == 'vcf' and hrc_vcfs_co[:6] == 'hrc_co':
             hrc_vcfs_list_co.append(hrc_vcfs_co)
@@ -146,6 +145,10 @@ def each_chromosome():
 
         pandas_df_cas = pd.read_table(directory1+vcf_name_ca, sep = '\t')
         pandas_df_con = pd.read_table(directory1+vcf_name_co, sep = '\t')
+
+        current_dict = dict_generator(pandas_df_cas,len(pandas_df_cas),
+        value = 'nucleotide')
+
 
         haplo1_cas = haploseparator(pandas_df_cas,len(pandas_df_cas),
         haplotype = 'h1')
@@ -158,14 +161,14 @@ def each_chromosome():
         haplotype = 'h2')
 
         translated_haplo1_cas = almost_haplotypes(haplo1_cas,
-        max_individuals_hrc_cases,full_dict)
+        max_individuals_hrc_cases,current_dict)
         translated_haplo2_cas = almost_haplotypes(haplo2_cas,
-        max_individuals_hrc_cases,full_dict)
+        max_individuals_hrc_cases,current_dict)
 
         translated_haplo1_con = almost_haplotypes(haplo1_con,
-        max_individuals_hrc_controls,full_dict)
+        max_individuals_hrc_controls,current_dict)
         translated_haplo2_con = almost_haplotypes(haplo2_con,
-        max_individuals_hrc_controls,full_dict)
+        max_individuals_hrc_controls,current_dict)
 
         print """
         *These are the most common haplotype configurations in the
@@ -188,93 +191,28 @@ def each_chromosome():
         >>>CONTROL INDIVIDUALS<<<
         """, translated_haplo2_con
 
-
-    """
-    #FULL VCF FOR ALL REGIONS IN CASES
-    chr3st_vcf_ca = pd.read_table(directory1+'chr3st_diseased_w_o_header.vcf',
-    sep='\t')
-    chr3st_vcf_co = pd.read_table(directory1+'chr3st_controls_w_o_header.vcf',
-    sep='\t')
-    chr3nd_vcf_ca = pd.read_table(directory1+'chr3nd_diseased_w_o_header.vcf',
-    sep='\t')
-    chr3nd_vcf_co = pd.read_table(directory1+'chr3nd_controls_w_o_header.vcf',
-    sep='\t')
-    chr5_vcf_ca = pd.read_table(directory1+'chr5_diseased_w_o_header.vcf',
-    sep='\t')
-    chr5_vcf_co = pd.read_table(directory1+'chr5_controls_w_o_header.vcf',
-    sep='\t')
-    chr7_vcf_ca = pd.read_table(directory1+'chr7_diseased_w_o_header.vcf',
-    sep='\t')
-    chr7_vcf_co = pd.read_table(directory1+'chr7_controls_w_o_header.vcf',
-    sep='\t')
-    chr20_vcf_ca = pd.read_table(directory1+'chr20_diseased_w_o_header.vcf',
-    sep='\t')
-    chr20_vcf_co = pd.read_table(directory1+'chr20_controls_w_o_header.vcf',
-    sep='\t')
-
-    chr3st_h1_ca = haploseparator(chr3st_vcf_ca,len(chr3st_vcf_ca),haplotype = 'h1')
-    chr3st_h2_ca = haploseparator(chr3st_vcf_ca,len(chr3st_vcf_ca),haplotype = 'h2')
-    chr3st_h1_co = haploseparator(chr3st_vcf_co,len(chr3st_vcf_co),haplotype = 'h1')
-    chr3st_h2_co = haploseparator(chr3st_vcf_co,len(chr3st_vcf_co),haplotype = 'h2')
-
-    chr3nd_h1_ca = haploseparator(chr3nd_vcf_ca,len(chr3nd_vcf_ca),haplotype = 'h1')
-    chr3nd_h2_ca = haploseparator(chr3nd_vcf_ca,len(chr3nd_vcf_ca),haplotype = 'h2')
-    chr3nd_h1_co = haploseparator(chr3nd_vcf_co,len(chr3nd_vcf_co),haplotype = 'h1')
-    chr3nd_h2_co = haploseparator(chr3nd_vcf_co,len(chr3nd_vcf_co),haplotype = 'h2')
-
-
-    #For haplotype 1
-    trans_full = almost_haplotypes(haplotype_1,
-    max_individuals_hrc_cases,full_dict)
-
-    print
-*These are the most common haplotype configurations in the
-first string of haplotype for all the interest regions*
->>>CASE INDIVIDUALS<<<
-, trans_full
-
-    #For haplotype 2
-    strans_full = almost_haplotypes(haplotype_2,
-    max_individuals_hrc_cases,full_dict)
-
-    print
-*These are the most common haplotype configurations in the
-first string of haplotype for all the interest regions*
->>>CASE INDIVIDUALS<<<
-, strans_full
-
-# The same just for controls
-
-    #For haplotype 1 (controls)
-    trans_fullc = almost_haplotypes(haplotype_1c,
-    max_individuals_hrc_controls,full_dict)
-
-    print
-*These are the most common haplotype configurations in the
-first string of haplotype for all the interest regions*
->>>CONTROL INDIVIDUALS<<<
-, trans_fullc
-
-    #For haplotype 2 (controls)
-    strans_fullc = almost_haplotypes(haplotype_2c,
-    max_individuals_hrc_controls,full_dict)
-
-    print
-*These are the most common haplotype configurations in the
-first string of haplotype for all the interest regions*
->>>CONTROL INDIVIDUALS<<<
-, strans_fullc
-"""
+        to_full= raw_input("Include full haplotype report?(y/n): ")
+        if to_full == 'y':
+            all_chromosomes_dis()
+        if to_full == 'n':
+            print ("*END OF THE RUNNING*")
 
 def all_chromosomes_dis():
     #FULL VCF FOR ALL REGIONS IN CASES
-    all_cases = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_diseased_w_o_header.vcf', sep='\t')
-    all_controls = pd.read_table('/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/full_controls_w_o_header.vcf', sep='\t')
-    haplotype_1 = haploseparator(all_cases,len(all_cases),haplotype = 'h1')
-    haplotype_2 = haploseparator(all_cases,len(all_cases),haplotype = 'h2')
-    haplotype_1c = haploseparator(all_controls,len(all_controls),haplotype = 'h1')
-    haplotype_2c = haploseparator(all_controls,len(all_controls),haplotype = 'h2')
-    full_dict = dict_generator(all_cases,len(all_cases),value = 'nucleotide')
+    all_cases = pd.read_table(directory1+'full_diseased_w_o_header.vcf',
+    sep='\t')
+    all_controls = pd.read_table(directory1+'full_controls_w_o_header.vcf',
+    sep='\t')
+    haplotype_1 = haploseparator(all_cases,len(all_cases),
+    haplotype = 'h1')
+    haplotype_2 = haploseparator(all_cases,len(all_cases),
+    haplotype = 'h2')
+    haplotype_1c = haploseparator(all_controls,len(all_controls),
+    haplotype = 'h1')
+    haplotype_2c = haploseparator(all_controls,len(all_controls),
+    haplotype = 'h2')
+    full_dict = dict_generator(all_cases,len(all_cases),
+    value = 'nucleotide')
 
     #For haplotype 1
     trans_full = almost_haplotypes(haplotype_1,
@@ -320,7 +258,9 @@ first string of haplotype for all the interest regions*
 
 def helper():
     partialvsfull = raw_input('''
-Show full haplotype report or partial haplotype report?(f/p): ''' )
+Show full haplotype report or partial haplotype report (per region)?(f/p): ''' )
+    print "*Working with the 4328 cases from the HRC imputed melanoma GWAS*"
+    print "*Working with the 7046 controls from the HRC imputed melanoma GWAS*"
     if partialvsfull == 'f':
         all_chromosomes_dis()
     if partialvsfull == 'p':
