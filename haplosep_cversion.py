@@ -191,11 +191,11 @@ def each_chromosome():
         >>>CONTROL INDIVIDUALS<<<
         """, translated_haplo2_con
 
-        to_full= raw_input("Include full haplotype report?(y/n): ")
-        if to_full == 'y':
-            all_chromosomes_dis()
-        if to_full == 'n':
-            print ("*END OF THE RUNNING*")
+    to_full= raw_input("Include full haplotype report?(y/n): ")
+    if to_full == 'y':
+        all_chromosomes_dis()
+    if to_full == 'n':
+        print ("*END*")
 
 def all_chromosomes_dis():
     #FULL VCF FOR ALL REGIONS IN CASES
@@ -255,6 +255,8 @@ first string of haplotype for all the interest regions*
 first string of haplotype for all the interest regions*
 >>>CONTROL INDIVIDUALS<<<
 """, strans_fullc
+
+    print ("*END*")
 
 def helper():
     partialvsfull = raw_input('''
