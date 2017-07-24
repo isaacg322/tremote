@@ -8,6 +8,8 @@ import sys
 
 # NO 1K GENOMES REPORT FOR THIS VERSION
 
+#Version made to work with the hrc derived haplotypes, directory1 variable changed!
+
 # GENERAL FUCNTIONS COLLECTION
 
 global max_individuals_1k, max_individuals_hrc_cases, max_individuals_hrc_controls
@@ -15,7 +17,7 @@ global directory1
 max_individuals_1k = 503
 max_individuals_hrc_cases = 4328
 max_individuals_hrc_controls = 7046
-directory1 = '/mnt/Genoma/drobles/igarcia/1k_phase3/cutted_original_hrc_vcfs/final_test/'
+directory1 = '/panfs/pan5/drobles/igarcia/'
 
 def haploseparator(vcf_dataframe,number_of_snps,**options):
 
@@ -134,7 +136,7 @@ def almost_haplotypes(haplotype,max_ind,dictionary):
 def each_chromosome():
     hrc_vcfs_list_ca = []
     hrc_vcfs_list_co = []
-    regions = ['RTEL1','SENP7','TERC','TERT','GPR37/POT1']
+    regions = ['RTEL1_case_derived', 'RTEL1_control_derived']
     for hrc_vcfs_ca in os.listdir(directory1):
         if hrc_vcfs_ca[-3:] == 'vcf' and hrc_vcfs_ca[:6] == 'hrc_ca':
             hrc_vcfs_list_ca.append(hrc_vcfs_ca)
@@ -199,6 +201,7 @@ def each_chromosome():
 
 def all_chromosomes_dis():
     #FULL VCF FOR ALL REGIONS IN CASES
+    ##NOT USE FOR TERC TEST!
     all_cases = pd.read_table(directory1+'full_diseased_w_o_header.vcf',
     sep='\t')
     all_controls = pd.read_table(directory1+'full_controls_w_o_header.vcf',
