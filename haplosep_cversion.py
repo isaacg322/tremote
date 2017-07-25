@@ -137,6 +137,8 @@ def each_chromosome():
     hrc_vcfs_list_ca = []
     hrc_vcfs_list_co = []
     regions = ['RTEL1_case_derived', 'RTEL1_control_derived']
+    print "This is cases list order", hrc_vcfs_list_ca
+    print "This is controls list order", hrc_vcfs_list_co
     for hrc_vcfs_ca in os.listdir(directory1):
         if hrc_vcfs_ca[-3:] == 'vcf' and hrc_vcfs_ca[:6] == 'hrc_ca':
             hrc_vcfs_list_ca.append(hrc_vcfs_ca)
