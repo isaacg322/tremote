@@ -136,15 +136,15 @@ def almost_haplotypes(haplotype,max_ind,dictionary):
 def each_chromosome():
     hrc_vcfs_list_ca = []
     hrc_vcfs_list_co = []
-    regions = ['RTEL1_case_derived', 'RTEL1_control_derived']
-    print "This is cases list order", hrc_vcfs_list_ca
-    print "This is controls list order", hrc_vcfs_list_co
+    regions = ['RTEL1_all_derived', 'RTEL1_control-only_derived']
     for hrc_vcfs_ca in os.listdir(directory1):
         if hrc_vcfs_ca[-3:] == 'vcf' and hrc_vcfs_ca[:6] == 'hrc_ca':
             hrc_vcfs_list_ca.append(hrc_vcfs_ca)
     for hrc_vcfs_co in os.listdir(directory1):
         if hrc_vcfs_co[-3:] == 'vcf' and hrc_vcfs_co[:6] == 'hrc_co':
             hrc_vcfs_list_co.append(hrc_vcfs_co)
+    print "This is cases list order", hrc_vcfs_list_ca
+    print "This is controls list order", hrc_vcfs_list_co
     for vcf_name_ca,vcf_name_co,re_names in zip(hrc_vcfs_list_ca,hrc_vcfs_list_co,regions):
 
         pandas_df_cas = pd.read_table(directory1+vcf_name_ca, sep = '\t')
