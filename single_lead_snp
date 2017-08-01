@@ -4,13 +4,11 @@ import os
 import sys
 
 
-lead_snp_chr3st = pd.read_table("~/Escritorio/con_lead_chr3st.vcf", sep = "\t")
+working_directory = ('/home/isaac/Escritorio/lead_snps_vcfs/')
 
-global lead_snp_chr3st
+def haploreference(vcf_pd_dataframe):
 
-def haploreference():
-
-    subs = lead_snp_chr3st.iloc[:,9:] # Show only those columns and rows with haplotype info
+    subs = vcf_pd_dataframe.iloc[:,9:] # Show only those columns and rows with haplotype info
     individuals = subs.columns.values #Column names
 
     haplotype1 = [] #Appends the allele value for each column and for each row
@@ -51,4 +49,54 @@ def haploreference():
 
     return(outlist)
 
-haploreference()
+hrc_vcfs_list_ca = []
+hrc_vcfs_list_co = []
+regions = ['RTEL1','OBCF1','TERC','TERT','GPR37/POT1']
+for hrc_vcfs_ca in os.listdir(working_directory):
+    if hrc_vcfs_ca[-3:] == 'vcf' and hrc_vcfs_ca[:3] == 'cas':
+        hrc_vcfs_list_ca.append(hrc_vcfs_ca)
+for hrc_vcfs_co in os.listdir(working_directory):
+    if hrc_vcfs_co[-3:] == 'vcf' and hrc_vcfs_co[:3] == 'con':
+        hrc_vcfs_list_co.append(hrc_vcfs_co)
+
+for vcf_name_ca,vcf_name_co,re_names in zip(hrc_vcfs_list_ca,hrc_vcfs_list_co,regions):
+    pandas_df_cas = pd.read_table(working_directory+vcf_name_ca, sep = '\t')
+    pandas_df_con = pd.read_table(working_directory+vcf_name_co, sep = '\t')
+
+    cases_report = haploreference(pandas_df_cas)
+    controls_report = haploreference(pandas_df_con)
+
+    final_tuple = (re_names,"lead SNP allele ocurrence at HRC imputed panel:\n\n",
+    "           ***Haplotype string 1***\n",
+    "                 ****Cases****\n",
+    "Reference allele at --> ",str(cases_report[0]), " individuals\n",
+    ">>",str((cases_report[0]*100)/4328),"percent of the sample\n",
+    "Alternative allele at --> ",str(cases_report[1]), " individuals\n",
+    ">>",str((cases_report[1]*100)/4328),"percent of the sample\n",
+    "Allele deletions at --> ",str(cases_report[2]), " individuals\n",
+    ">>",str((cases_report[2]*100)/4328),"percent of the sample\n",
+    "                ****Controls****\n",
+    "Reference allele at --> ",str(controls_report[0]), " individuals\n",
+    ">>",str((controls_report[0]*100)/7046),"percent of the sample\n",
+    "Alternative allele at --> ",str(controls_report[1]), " individuals\n",
+    ">>",str((controls_report[1]*100)/7046),"percent of the sample\n",
+    "Allele deletions at --> ",str(controls_report[2]), " individuals\n",
+    ">>",str((controls_report[2]*100)/7046),"percent of the sample\n\n",
+    "            ***Haplotype string 2***\n",
+    "                 ****Cases****\n",
+    "Reference allele at --> ",str(cases_report[3]), " individuals\n",
+    ">>",str((cases_report[3]*100)/4328),"percent of the sample\n",
+    "Alternative allele at --> ",str(cases_report[4]), " individuals\n",
+    ">>",str((cases_report[4]*100)/4328),"percent of the sample\n",
+    "Allele deletions at --> ",str(cases_report[5]), " individuals\n",
+    ">>",str((cases_report[5]*100)/4328),"percent of the sample\n",
+    "                ****Controls****\n",
+    "Reference allele at --> ",str(controls_report[3]), " individuals\n"
+    ">>",str((controls_report[3]*100)/7046),"percent of the sample\n",
+    "Alternative allele at --> ",str(controls_report[4]), " individuals\n",
+    ">>",str((controls_report[4]*100)/7046),"percent of the sample\n",
+    "Allele deletions at --> ",str(controls_report[5]), " individuals\n"
+    ">>",str((controls_report[5]*100)/7046),"percent of the sample\n\n\n")
+
+    final_string = ' '.join(final_tuple)
+    print final_string
